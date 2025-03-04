@@ -12,12 +12,20 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                <x-nav-link 
+                        :href="route('dashboard')" 
+                        :active="request()->routeIs('dashboard')"
+                        hx-boost="true"  
+                        hx-push-url="true">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('chirps.index')" :active="request()->routeIs('chirps.index')">
-        {{ __('Chirps') }}
-    </x-nav-link>
+                    <x-nav-link 
+                        :href="route('chirps.index')"
+                        :active="request()->routeIs('chirps.index')" 
+                        hx-boost="true"  
+                        hx-push-url="true">
+                        {{ __('Chirps') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -37,7 +45,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                    <x-dropdown-link 
+                        :href="route('profile.edit')"
+                        hx-boost="true">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
@@ -70,10 +80,18 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+        <x-responsive-nav-link 
+                :href="route('dashboard')" 
+                :active="request()->routeIs('dashboard')"
+                hx-boost="true"
+                hx-push-url="true">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('chirps.index')" :active="request()->routeIs('chirps.index')">
+            <x-responsive-nav-link 
+                :href="route('chirps.index')" 
+                :active="request()->routeIs('chirps.index')"
+                hx-boost="true"
+                hx-push-url="true">
         {{ __('Chirps') }}
     </x-responsive-nav-link>
         </div>

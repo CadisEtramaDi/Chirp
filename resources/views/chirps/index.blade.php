@@ -1,6 +1,9 @@
 <x-app-layout>
     <div class="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
-        <form method="POST" action="{{ route('chirps.store') }}">
+        <form 
+            hx-post="{{route('chirps.store')}}" 
+            hx-target="body" 
+            hx-swap="outerHTML">
             @csrf
             <textarea
                 name="message"
@@ -8,10 +11,10 @@
                 class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
             >{{ old('message') }}</textarea>
             <x-input-error :messages="$errors->get('message')" class="mt-2" />
-            <x-primary-button class="mt-4">{{ __('Chirp') }}</x-primary-button>
+            <x-primary-button class="mt-4">{{ __('Post') }}</x-primary-button>
         </form>
-        <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
-            @foreach ($chirps as $chirp)
+        @foreach ($chirps as $chirp)
+        <div class="mt-6 mb-3 bg-white shadow-sm rounded-lg divide-y">
                 <div class="p-6 flex space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 -scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -35,24 +38,31 @@
                                         </button>
                                     </x-slot>
                                     <x-slot name="content">
-                                        <x-dropdown-link :href="route('chirps.edit', $chirp)">
+                                        <x-dropdown-link :href="route('chirps.edit', $chirp)"
+                                        hx-boost="true"
+                                        hx-push-url="true">
                                             {{ __('Edit') }}
                                         </x-dropdown-link>
-                                        <form method="POST" action="{{ route('chirps.destroy', $chirp) }}">
+                                        <form 
+                                            hx-delete="{{ route('chirps.destroy', $chirp) }}" \
+                                            hx-target="body" 
+                                            hx-swap="outerHTML">
                                             @csrf
                                             @method('delete')
-                                            <x-dropdown-link :href="route('chirps.destroy', $chirp)" onclick="event.preventDefault(); this.closest('form').submit();">
-                                                {{ __('Delete') }}
+                                            <x-dropdown-link>
+                                                <button type="submit">
+                                                    {{ __('Delete') }}
+                                                </button>
                                             </x-dropdown-link>
                                         </form>
                                     </x-slot>
                                 </x-dropdown>
                             @endif
                         </div>
-                        <p class="mt-4 text-lg text-gray-900">{{ $chirp->message }}</p>
+                        <p class="mt-4 text-lg text-gray-900">{{ $chirp->message}}</p>
                     </div>
                 </div>
-            @endforeach
-        </div>
+            </div>
+        @endforeach
     </div>
 </x-app-layout>

@@ -3,20 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chirp;
-use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\View\view;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\View as FacadesView;
+
 
 class ChirpController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index():View
+    public function index()
     {
         //
         return view('chirps.index', [
@@ -35,16 +30,18 @@ class ChirpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request):RedirectResponse
+    public function store(Request $request)
     {
         //
-        $validated = $request->validate([
+        $validate = $request->validate([
             'message' => 'required|string|max:255',
         ]);
  
-        $request->user()->chirps()->create($validated);
+        $request->user()->chirps()->create($validate);
  
-        return redirect(route('chirps.index'));
+        return view('chirps.index',[
+            'chirps' => Chirp::with('user')->latest()->get(),
+        ]);
     }
 
     /**
@@ -58,12 +55,10 @@ class ChirpController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Chirp $chirp):View
+    public function edit(Chirp $chirp)
     {
         //
-        Gate::authorize('update', $chirp);
- 
-        return view('chirps.edit', [
+        return view('chirps.edit',[
             'chirp' => $chirp,
         ]);
     }
@@ -71,30 +66,30 @@ class ChirpController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Chirp $chirp):RedirectResponse
+    public function update(Request $request, Chirp $chirp)
     {
         //
-        Gate::authorize('update', $chirp);
- 
-        $validated = $request->validate([
-            'message' => 'required|string|max:255',
+        $validate = $request->validate([
+            'message' => 'required|string|max:5000',
         ]);
- 
-        $chirp->update($validated);
- 
-        return redirect(route('chirps.index'));
+
+        $chirp->update($validate);
+
+        return view('chirps.index',[
+            'chirps' => Chirp::with('user')->latest()->get(),
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Chirp $chirp):RedirectResponse
+    public function destroy(Chirp $chirp)
     {
-        //
-        Gate::authorize('delete', $chirp);
- 
+
         $chirp->delete();
- 
-        return redirect(route('chirps.index'));
+
+        return view('chirps.index',[
+            'chirps' => Chirp::with('user')->latest()->get(),
+        ]);
     }
 }
